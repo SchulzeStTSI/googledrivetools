@@ -45,11 +45,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     parser.add_argument("-sAF", "--serviceAccountFile", help="Google Drive Service Account File",default=None)
-
+    
     args = parser.parse_args()
     service_account_file = os.path.join("tmp", "google_service_account.json")
  
     if args.serviceAccountFile != None:
+        service_account_file = args.serviceAccountFile
+
+    if os.environ.get("GOOGLE_SERVICE_ACCOUNT") is not None:
         jsonDecoded = base64.b64decode(os.environ.get("GOOGLE_SERVICE_ACCOUNT"))    
         file = open(service_account_file,"w")
         file.write(jsonDecoded)
