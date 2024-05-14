@@ -41,6 +41,22 @@ Works only with authenticated google service accounts.
 ```
 3. Run the script, content will be placed under "content"
 
+### Workflow Example
+
+In the workflow the service account json can be defined as base 64 in the workflow secrets:) 
+
+```
+steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5.1.0
+      - run: git clone https://github.com/diinfsch/googledrivetools.git
+      - run: pip install -r googledrivetools/requirements.txt
+      - run: python googledrivetools/clone.py -cF config -sAF googledrivetools/google_service_account.json
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+```
 
 ### Flags
 
