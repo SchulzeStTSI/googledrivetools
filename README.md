@@ -1,17 +1,21 @@
-# Google Drive Clone Tool
+# Google Drive Tools
+
+Script collection for using google drive api.
+
+## Clone
 
 This script clones an google drive folder to hard drive and can be used e.g. for build pipelines. 
 
 Works only with authenticated google service accounts.
 
-# Preperations
+### Preperations
 
 1. Register a google developer account
 2. Create an service account
 3. Add the service account to google drive
 4. Download Service account auth data (json)
 
-# Usage
+### Usage
 
 1. Configure in a folder the source folder(you can extract it from google drive share link option):
    ```
@@ -38,7 +42,7 @@ Works only with authenticated google service accounts.
 3. Run the script, content will be placed under "content"
 
 
-# Flags
+### Flags
 
 - cF : changes the config folder location
 - sAF: changes the service account file location
