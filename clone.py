@@ -54,9 +54,8 @@ if __name__ == "__main__":
 
     if os.environ.get("GOOGLE_SERVICE_ACCOUNT") is not None:
         jsonDecoded = base64.b64decode(os.environ.get("GOOGLE_SERVICE_ACCOUNT"))    
-        file = open(service_account_file,"w")
-        file.write(jsonDecoded)
-        file.close()
+        with open(service_account_file,"w") as f:
+            json.dump(jsonDecoded,f)
 
     creds = service_account.Credentials.from_service_account_file(service_account_file)
     service = build('drive', 'v3', credentials=creds)
