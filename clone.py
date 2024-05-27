@@ -23,21 +23,24 @@ def download_file(service, file_id,file_name, destination_folder):
         status, done = downloader.next_chunk()
         print(f"Download {file_name} {int(status.progress() * 100)}%.")
 
-def clone_folder(service, source_folder_id, destination_folder_name):
+def clone_folder(service, source_folder_id, destination_folder_name,softClone,file):
     if not os.path.exists(destination_folder_name):
      os.mkdir(destination_folder_name)
 
     results = service.files().list(q=f"'{source_folder_id}' in parents",
-                                    fields='files(id, name, mimeType)').execute()
+                                    fields='files(id, name, mimeType, webContentLink)').execute()
     items = results.get('files', [])
 
     for item in items:
         file_id = item['id']
         file_name = item['name']
+       
         if item['mimeType'] != mimeType:
-          download_file(service,file_id,file_name,destination_folder_name)
+          file.write(item["webContentLink"]+"\n")
+          if not softClone:
+             download_file(service,file_id,file_name,destination_folder_name)
         else:
-            clone_folder(service,file_id,os.path.join(destination_folder_name,file_name))
+            clone_folder(service,file_id,os.path.join(destination_folder_name,file_name),softClone,file)
 
     print(f'Folder cloned successfully to {destination_folder_name}')
 
@@ -45,6 +48,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     parser.add_argument("-sAF", "--serviceAccountFile", help="Google Drive Service Account File",default=None)
+    parser.add_argument("-sc", "--softClone", help="Just read filenames",default=True)
     
     args = parser.parse_args()
     service_account_file = os.path.join("tmp", "google_service_account.json")
@@ -60,8 +64,13 @@ if __name__ == "__main__":
     creds = service_account.Credentials.from_service_account_file(service_account_file)
     service = build('drive', 'v3', credentials=creds)
 
+
+    index = open("index", "a")
+
     with open(os.path.join(args.configFolder,'googledrive.json')) as f:
         d = json.load(f)
         source_folder_id = d["sourceFolder"]
         destination_folder_name = 'content'
-        clone_folder(service, source_folder_id, destination_folder_name)
+        clone_folder(service, source_folder_id, destination_folder_name,args.softClone,index)
+
+    index.close()
