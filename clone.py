@@ -60,7 +60,10 @@ if __name__ == "__main__":
 
     with open(os.path.join(args.configFolder,'googledrive.json')) as f:
         d = json.load(f)
-        source_folder_id = d["sourceFolder"]
+        if "sourceFolder" not in d: 
+            raise "No source folder given"
+        else :
+            source_folder_id = d["sourceFolder"]
         destination_folder_name = 'content'
         clone_folder(service, source_folder_id, destination_folder_name,args.softClone,index)
 
