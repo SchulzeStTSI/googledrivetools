@@ -8,6 +8,10 @@ This script clones an google drive folder to hard drive and can be used e.g. for
 
 Works only with authenticated google service accounts.
 
+## Upload
+
+This script uploads an folder to drive.
+
 ### Preperations
 
 1. Register a google developer account
@@ -20,7 +24,8 @@ Works only with authenticated google service accounts.
 1. Configure in a folder the source folder(you can extract it from google drive share link option):
    ```
    {
-    "sourceFolder":"aaaaaaaa" 
+    "sourceFolder":"aaaaaaaa",
+    "desintationFolder":"aaaaa
    }
    ```
 2. Configure in ENV as base64 object the service account json(optional under tmp/google_service_account.json)
@@ -62,6 +67,7 @@ steps:
 
 - cF : changes the config folder location
 - sAF: changes the service account file location
+- uF: Upload Folder filepath
 
 # Resulting Structure
 

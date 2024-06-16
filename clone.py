@@ -6,8 +6,7 @@ import base64
 import json
 import argparse
 import io
-
-mimeType = 'application/vnd.google-apps.folder'
+import common
 
 
 def download_file(service, file_id,file_name, destination_folder,webLink,file):
@@ -36,7 +35,7 @@ def clone_folder(service, source_folder_id, destination_folder_name,softClone,fi
         file_id = item['id']
         file_name = item['name']
       
-        if item['mimeType'] != mimeType:
+        if item['mimeType'] != common.mimeType:
           webLink = item["webContentLink"]
           if not softClone:
              download_file(service,file_id,file_name,destination_folder_name,webLink, file)
@@ -54,20 +53,9 @@ if __name__ == "__main__":
     parser.add_argument("-sc", "--softClone", help="Just read filenames",default=True,action=argparse.BooleanOptionalAction)
     
     args = parser.parse_args()
-    service_account_file = os.path.join("tmp", "google_service_account.json")
- 
-    if args.serviceAccountFile != None:
-        service_account_file = args.serviceAccountFile
-
-    if os.environ.get("GOOGLE_SERVICE_ACCOUNT") is not None:
-        jsonDecoded = base64.b64decode(os.environ.get("GOOGLE_SERVICE_ACCOUNT"))    
-        with open(service_account_file,"wb") as f:
-            f.write(jsonDecoded)
-
-    creds = service_account.Credentials.from_service_account_file(service_account_file)
-    service = build('drive', 'v3', credentials=creds)
-
-
+    
+    service = common.configGoogleDrive(args.serviceAccountFile)
+  
     index = open("index", "w")
 
     with open(os.path.join(args.configFolder,'googledrive.json')) as f:
