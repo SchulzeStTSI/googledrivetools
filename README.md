@@ -62,3 +62,9 @@ steps:
 
 - cF : changes the config folder location
 - sAF: changes the service account file location
+
+# Resulting Structure
+
+-content
+--{Drive Content}
+-index (List of Weblinks for each File, but no folders)

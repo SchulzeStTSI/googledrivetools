@@ -10,11 +10,11 @@ import io
 mimeType = 'application/vnd.google-apps.folder'
 
 
-def download_file(service, file_id,file_name, destination_folder):
+def download_file(service, file_id,file_name, destination_folder,webLink,file):
     path = os.path.join(destination_folder, file_name)
     if os.path.exists(path):
         return
-
+    
     request = service.files().get_media(fileId=file_id)
     fh = io.FileIO(path, 'wb')
     downloader = MediaIoBaseDownload(fh, request)
@@ -22,6 +22,7 @@ def download_file(service, file_id,file_name, destination_folder):
     while done is False:
         status, done = downloader.next_chunk()
         print(f"Download {file_name} {int(status.progress() * 100)}%.")
+    file.write(webLink+"|"+path+"\n")
 
 def clone_folder(service, source_folder_id, destination_folder_name,softClone,file):
     if not os.path.exists(destination_folder_name):
@@ -34,11 +35,13 @@ def clone_folder(service, source_folder_id, destination_folder_name,softClone,fi
     for item in items:
         file_id = item['id']
         file_name = item['name']
-       
+      
         if item['mimeType'] != mimeType:
-          file.write(item["webContentLink"]+"\n")
+          webLink = item["webContentLink"]
           if not softClone:
-             download_file(service,file_id,file_name,destination_folder_name)
+             download_file(service,file_id,file_name,destination_folder_name,webLink, file)
+          else:
+            file.write(webLink+"|\n")
         else:
             clone_folder(service,file_id,os.path.join(destination_folder_name,file_name),softClone,file)
 
@@ -48,7 +51,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     parser.add_argument("-sAF", "--serviceAccountFile", help="Google Drive Service Account File",default=None)
-    parser.add_argument("-sc", "--softClone", help="Just read filenames",default=True)
+    parser.add_argument("-sc", "--softClone", help="Just read filenames",default=True,action=argparse.BooleanOptionalAction)
     
     args = parser.parse_args()
     service_account_file = os.path.join("tmp", "google_service_account.json")
@@ -65,7 +68,7 @@ if __name__ == "__main__":
     service = build('drive', 'v3', credentials=creds)
 
 
-    index = open("index", "a")
+    index = open("index", "w")
 
     with open(os.path.join(args.configFolder,'googledrive.json')) as f:
         d = json.load(f)
