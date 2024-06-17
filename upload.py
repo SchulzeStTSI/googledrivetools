@@ -60,7 +60,7 @@ def upload_file(service,file_path, folder_id,index):
 
         print(f'File ID: {file.get("id")}')
         print(f'Web Content Link: {file.get("webContentLink")}')
-        index.write(file.get("webContentLink")+"|"+file_path+"\n")
+        index.write(file.get("webContentLink")+"|"+file_path+"|\n")
 
 
 if __name__ == "__main__":
