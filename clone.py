@@ -9,7 +9,7 @@ import io
 import common
 
 
-def download_file(service, file_id,file_name, destination_folder,webLink,file):
+def download_file(service, file_id,file_name, destination_folder,webLink,file, mimeType):
     path = os.path.join(destination_folder, file_name)
     if os.path.exists(path):
         return
@@ -21,7 +21,7 @@ def download_file(service, file_id,file_name, destination_folder,webLink,file):
     while done is False:
         status, done = downloader.next_chunk()
         print(f"Download {file_name} {int(status.progress() * 100)}%.")
-    file.write(webLink+"|"+path+"|\n")
+    file.write(webLink+"|"+path+"|"+mimeType+"\n")
 
 def clone_folder(service, source_folder_id, destination_folder_name,softClone,file):
     if not os.path.exists(destination_folder_name):
@@ -34,13 +34,13 @@ def clone_folder(service, source_folder_id, destination_folder_name,softClone,fi
     for item in items:
         file_id = item['id']
         file_name = item['name']
-      
-        if item['mimeType'] != common.mimeType:
+        mimeType= item['mimeType']
+        if  mimeType != common.mimeType:
           webLink = item["webContentLink"]
           if not softClone:
-             download_file(service,file_id,file_name,destination_folder_name,webLink, file)
+             download_file(service,file_id,file_name,destination_folder_name,webLink, file, mimeType)
           else:
-            file.write(webLink+"||\n")
+            file.write(webLink+"||"+mimeType+"\n")
         else:
             clone_folder(service,file_id,os.path.join(destination_folder_name,file_name),softClone,file)
 
