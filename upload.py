@@ -56,11 +56,11 @@ def upload_file(service,file_path, folder_id,index):
             fields='id'
         ).execute()
         
-        file = service.files().get(fileId=file.get('id'), fields='id, webContentLink').execute()
+        file = service.files().get(fileId=file.get('id'), fields='id, webContentLink, name').execute()
 
         print(f'File ID: {file.get("id")}')
         print(f'Web Content Link: {file.get("webContentLink")}')
-        index.write(file.get("webContentLink")+"|"+file_path+"|"+mime_type+"\n")
+        index.write(file.get("webContentLink")+"|"+file_path+"|"+mime_type+"|"+file.get("name"))
 
 
 if __name__ == "__main__":
