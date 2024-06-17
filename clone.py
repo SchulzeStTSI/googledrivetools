@@ -24,7 +24,7 @@ def download_file(service, file_id,file_name, destination_folder,webLink,file, m
     file.write(webLink+"|"+path+"|"+mimeType+"\n")
 
 def clone_folder(service, source_folder_id, destination_folder_name,softClone,file):
-    if not os.path.exists(destination_folder_name):
+    if not os.path.exists(destination_folder_name) and not softClone:
      os.mkdir(destination_folder_name)
 
     results = service.files().list(q=f"'{source_folder_id}' in parents",
