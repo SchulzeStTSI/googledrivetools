@@ -6,7 +6,7 @@ import json
 
 mimeType = 'application/vnd.google-apps.folder'
 
-jsonFile =[]
+contentindexObjects =[]
 
 def writeIndexEntry(weblink,path,mimeType,file_name):
     o = {
@@ -15,12 +15,15 @@ def writeIndexEntry(weblink,path,mimeType,file_name):
         "mimeType":mimeType,
         "fileName":file_name
     }      
-    jsonFile.append(o)
+    contentindexObjects.append(o)
 
 
 def writeIndex():
    index = open("index", "w")
-   json_object = json.dumps(jsonFile, indent=4)
+   contentIndex = {
+       "indexObjects": contentindexObjects
+   }
+   json_object = json.dumps(contentIndex, indent=4)
    index.write(json_object)
    index.close()
       
