@@ -2,9 +2,28 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import base64
 import os
+import json
 
 mimeType = 'application/vnd.google-apps.folder'
 
+jsonFile =[]
+
+def writeIndexEntry(weblink,path,mimeType,file_name):
+    o = {
+        "webLink":weblink,
+        "path": path,
+        "mimeType":mimeType,
+        "fileName":file_name
+    }      
+    jsonFile.append(o)
+
+
+def writeIndex():
+   index = open("index", "w")
+   json_object = json.dumps(jsonFile, indent=4)
+   index.write(json_object)
+   index.close()
+      
 
 def configGoogleDrive(serviceAccountFile):
 

@@ -9,7 +9,7 @@ import io
 import common
 
 
-def download_file(service, file_id,file_name, destination_folder,webLink,file, mimeType):
+def download_file(service, file_id,file_name, destination_folder,webLink, mimeType):
     path = os.path.join(destination_folder, file_name)
     if os.path.exists(path):
         return
@@ -21,9 +21,9 @@ def download_file(service, file_id,file_name, destination_folder,webLink,file, m
     while done is False:
         status, done = downloader.next_chunk()
         print(f"Download {file_name} {int(status.progress() * 100)}%.")
-    file.write(webLink+"|"+path+"|"+mimeType+"|"+file_name*"\n")
+    common.writeIndexEntry(webLink,path,mimeType,file_name)
 
-def clone_folder(service, source_folder_id, destination_folder_name,softClone,file):
+def clone_folder(service, source_folder_id, destination_folder_name,softClone):
     if not os.path.exists(destination_folder_name) and not softClone:
      os.mkdir(destination_folder_name)
 
@@ -38,11 +38,11 @@ def clone_folder(service, source_folder_id, destination_folder_name,softClone,fi
         if  mimeType != common.mimeType:
           webLink = item["webContentLink"]
           if not softClone:
-             download_file(service,file_id,file_name,destination_folder_name,webLink, file, mimeType)
+             download_file(service,file_id,file_name,destination_folder_name,webLink, mimeType)
           else:
-            file.write(webLink+"||"+mimeType+"|"+file_name+"\n")
+            common.writeIndexEntry(webLink,"",mimeType,file_name)
         else:
-            clone_folder(service,file_id,os.path.join(destination_folder_name,file_name),softClone,file)
+            clone_folder(service,file_id,os.path.join(destination_folder_name,file_name),softClone)
 
     print(f'Folder cloned successfully to {destination_folder_name}')
 
@@ -56,8 +56,6 @@ if __name__ == "__main__":
     
     service = common.configGoogleDrive(args.serviceAccountFile)
   
-    index = open("index", "w")
-
     with open(os.path.join(args.configFolder,'googledrive.json')) as f:
         d = json.load(f)
         if "sourceFolder" not in d: 
@@ -65,6 +63,7 @@ if __name__ == "__main__":
         else :
             source_folder_id = d["sourceFolder"]
         destination_folder_name = 'content'
-        clone_folder(service, source_folder_id, destination_folder_name,args.softClone,index)
+        clone_folder(service, source_folder_id, destination_folder_name,args.softClone)
 
-    index.close()
+    common.writeIndex()
+ 

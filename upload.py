@@ -24,7 +24,7 @@ def create_folder(service, name, parent_id=None):
     return folder.get('id')
 
 
-def upload_folder(service,source_folder_name, destination_id, index,parent_id):
+def upload_folder(service,source_folder_name, destination_id,parent_id):
     if not os.path.exists(source_folder_name):
      os.mkdir(source_folder_name)
 
@@ -37,12 +37,12 @@ def upload_folder(service,source_folder_name, destination_id, index,parent_id):
     for item in os.listdir(source_folder_name):
         item_path = os.path.join(source_folder_name, item)
         if os.path.isdir(item_path):
-            upload_folder(service, item_path, folder_id,index)
+            upload_folder(service, item_path, folder_id)
         else:
-            upload_file(service, item_path, folder_id,index)
+            upload_file(service, item_path, folder_id)
      
 
-def upload_file(service,file_path, folder_id,index):
+def upload_file(service,file_path, folder_id):
 
     mime_type = get_mime_type(file_path)
 
@@ -60,7 +60,7 @@ def upload_file(service,file_path, folder_id,index):
 
         print(f'File ID: {file.get("id")}')
         print(f'Web Content Link: {file.get("webContentLink")}')
-        index.write(file.get("webContentLink")+"|"+file_path+"|"+mime_type+"|"+file.get("name"))
+        common.writeIndexEntry(file.get("webContentLink"),file_path,mime_type,file.get("name"))
 
 
 if __name__ == "__main__":
@@ -72,8 +72,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     service = common.configGoogleDrive(args.serviceAccountFile)
-  
-    index = open("index", "w")
 
     with open(os.path.join(args.configFolder,'googledrive.json')) as f:
         d = json.load(f)
@@ -82,6 +80,6 @@ if __name__ == "__main__":
         else:
            destination_folder_id = d["destinationFolder"]
         source_folder_name = args.uploadFolder
-        upload_folder(service, source_folder_name, destination_folder_id,index,args.parentid)
+        upload_folder(service, source_folder_name, destination_folder_id,args.parentid)
 
-    index.close()
+    common.writeIndex()
