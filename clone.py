@@ -23,7 +23,7 @@ def download_file(service, file_id,file_name, destination_folder,webLink, mimeTy
         print(f"Download {file_name} {int(status.progress() * 100)}%.")
     common.writeIndexEntry(webLink,path,mimeType,file_name)
 
-def clone_folder(service, source_folder_id, destination_folder_name,softClone):
+def clone_folder(service, source_folder_id, destination_folder_name,softClone,mime_Type):
     if not os.path.exists(destination_folder_name) and not softClone:
      os.mkdir(destination_folder_name)
 
@@ -35,6 +35,10 @@ def clone_folder(service, source_folder_id, destination_folder_name,softClone):
         file_id = item['id']
         file_name = item['name']
         mimeType= item['mimeType']
+
+        if mimeType != common.mimeType and (mime_Type != None and mime_Type != mimeType):
+           continue
+
         if  mimeType != common.mimeType:
           webLink = item["webContentLink"]
           if not softClone:
@@ -42,7 +46,7 @@ def clone_folder(service, source_folder_id, destination_folder_name,softClone):
           else:
             common.writeIndexEntry(webLink,"",mimeType,file_name)
         else:
-            clone_folder(service,file_id,os.path.join(destination_folder_name,file_name),softClone)
+            clone_folder(service,file_id,os.path.join(destination_folder_name,file_name),softClone,mime_Type)
 
     print(f'Folder cloned successfully to {destination_folder_name}')
 
@@ -51,6 +55,7 @@ if __name__ == "__main__":
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     parser.add_argument("-sAF", "--serviceAccountFile", help="Google Drive Service Account File",default=None)
     parser.add_argument("-sc", "--softClone", help="Just read filenames",default=True,action=argparse.BooleanOptionalAction)
+    parser.add_argument("-mT", "--mimeType", help="mimeType which shall be considered",default=None)
     
     args = parser.parse_args()
     
@@ -63,7 +68,7 @@ if __name__ == "__main__":
         else :
             source_folder_id = d["sourceFolder"]
         destination_folder_name = 'content'
-        clone_folder(service, source_folder_id, destination_folder_name,args.softClone)
+        clone_folder(service, source_folder_id, destination_folder_name,args.softClone, args.mimeType)
 
     common.writeIndex()
  
