@@ -66,12 +66,11 @@ def upload_file(service,file_path, folder_id):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
-    parser.add_argument("-sAF", "--serviceAccountFile", help="Google Drive Service Account File",default=None)
     parser.add_argument("-uF", "--uploadFolder", help="Uploads the entire folder to drive",default="blub")
     parser.add_argument("-pid", "--parentid", help="parentid",default=None)
 
     args = parser.parse_args()
-    service = common.configGoogleDrive(args.serviceAccountFile)
+    service = common.configGoogleDrive(parser)
 
     with open(os.path.join(args.configFolder,'googledrive.json')) as f:
         d = json.load(f)

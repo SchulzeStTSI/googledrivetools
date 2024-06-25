@@ -3,17 +3,19 @@ from googleapiclient.discovery import build
 import base64
 import os
 import json
+import argparse
 
 mimeType = 'application/vnd.google-apps.folder'
 
 contentindexObjects =[]
 
-def writeIndexEntry(weblink,path,mimeType,file_name):
+def writeIndexEntry(weblink,path,mimeType,file_name, properties):
     o = {
         "webLink":weblink,
         "path": path,
         "mimeType":mimeType,
-        "fileName":file_name
+        "fileName":file_name,
+        "properties": properties
     }      
     contentindexObjects.append(o)
 
@@ -26,14 +28,15 @@ def writeIndex():
    json_object = json.dumps(contentIndex, indent=4)
    index.write(json_object)
    index.close()
-      
 
-def configGoogleDrive(serviceAccountFile):
-
+def configGoogleDrive(parser):
+    parser.add_argument("-sAF", "--serviceAccountFile", help="Google Drive Service Account File",default=None)
     service_account_file = os.path.join("tmp", "google_service_account.json")
- 
-    if serviceAccountFile != None:
-        service_account_file = serviceAccountFile
+    
+    args = parser.parse_args()
+
+    if args.serviceAccountFile != None:
+        service_account_file = args.serviceAccountFile
 
     if os.environ.get("GOOGLE_SERVICE_ACCOUNT") is not None:
         jsonDecoded = base64.b64decode(os.environ.get("GOOGLE_SERVICE_ACCOUNT"))    
