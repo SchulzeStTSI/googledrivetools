@@ -66,10 +66,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     parser.add_argument("-dF", "--descriptorFolder", help="Folder where are the descriptors of a file",default=".")
-
+    common.addArgs(parser)
     args = parser.parse_args()
 
-    service = common.configGoogleDrive(parser)
+    service = common.configGoogleDrive(args)
 
     with open(os.path.join(args.configFolder,'googledrive.json')) as f:
         d = json.load(f)

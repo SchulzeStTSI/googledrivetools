@@ -29,11 +29,12 @@ def writeIndex():
    index.write(json_object)
    index.close()
 
-def configGoogleDrive(parser):
+def addArgs(parser):
     parser.add_argument("-sAF", "--serviceAccountFile", help="Google Drive Service Account File",default=None)
-    service_account_file = os.path.join("tmp", "google_service_account.json")
+
+def configGoogleDrive(args):
     
-    args = parser.parse_args()
+    service_account_file = os.path.join("tmp", "google_service_account.json")
 
     if args.serviceAccountFile != None:
         service_account_file = args.serviceAccountFile

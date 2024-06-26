@@ -68,9 +68,9 @@ if __name__ == "__main__":
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     parser.add_argument("-uF", "--uploadFolder", help="Uploads the entire folder to drive",default="blub")
     parser.add_argument("-pid", "--parentid", help="parentid",default=None)
-
+    common.addArgs(parser)
     args = parser.parse_args()
-    service = common.configGoogleDrive(parser)
+    service = common.configGoogleDrive(args)
 
     with open(os.path.join(args.configFolder,'googledrive.json')) as f:
         d = json.load(f)
