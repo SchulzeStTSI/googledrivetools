@@ -12,6 +12,14 @@ Works only with authenticated google service accounts.
 
 This script uploads an folder to drive.
 
+## Add Properties
+
+The script can be used to add properties to an file on the drive. The properties must be in a json with the same name of the file and they are attached to the file as "properties". 
+
+## Drive Cleaner
+
+If used, the script searches for "properties" and if found for "expire". If a file has an expire date, it will be removed from the drive. Otherwise nothing happens.
+
 ### Preperations
 
 1. Register a google developer account
