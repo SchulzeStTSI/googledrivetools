@@ -24,27 +24,30 @@ def create_folder(service, name, parent_id=None):
     return folder.get('id')
 
 
-def upload_folder(service,source_folder_name, destination_id,parent_id):
+def upload_folder(service,source_folder_name, destination_id,parent_id,media_type,root):
     if not os.path.exists(source_folder_name):
      os.mkdir(source_folder_name)
 
     folder_name = os.path.basename(source_folder_name)
-    if parent_id:
+    if parent_id and root:
         folder_id = parent_id
     else:
        folder_id = create_folder(service, folder_name, destination_id)
-
+    root = False
     for item in os.listdir(source_folder_name):
         item_path = os.path.join(source_folder_name, item)
         if os.path.isdir(item_path):
-            upload_folder(service, item_path, folder_id)
+            upload_folder(service, item_path, folder_id,media_type,root)
         else:
-            upload_file(service, item_path, folder_id)
+            upload_file(service, item_path, folder_id,media_type)
      
 
-def upload_file(service,file_path, folder_id):
+def upload_file(service,file_path, folder_id,media_type):
 
     mime_type = get_mime_type(file_path)
+
+    if media_type != None and media_type != mime_type:
+        return
 
     with open(file_path, 'rb') as file:
         file_metadata = {'name': os.path.basename(file_path),'parents': [folder_id]}
@@ -68,6 +71,8 @@ if __name__ == "__main__":
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     parser.add_argument("-uF", "--uploadFolder", help="Uploads the entire folder to drive",default="blub")
     parser.add_argument("-pid", "--parentid", help="parentid",default=None)
+    parser.add_argument("-mT", "--mediaType", help="Media Type which shall be uploaded",default=None)
+
     common.addArgs(parser)
     args = parser.parse_args()
     service = common.configGoogleDrive(args)
@@ -79,6 +84,6 @@ if __name__ == "__main__":
         else:
            destination_folder_id = d["destinationFolder"]
         source_folder_name = args.uploadFolder
-        upload_folder(service, source_folder_name, destination_folder_id,args.parentid)
+        upload_folder(service, source_folder_name, destination_folder_id,args.parentid,args.mediaType,True)
 
     common.writeIndex()
