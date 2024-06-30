@@ -20,8 +20,8 @@ def writeIndexEntry(weblink,path,mimeType,file_name, properties):
     contentindexObjects.append(o)
 
 
-def writeIndex():
-   index = open("index", "w")
+def writeIndex(contentfolder):
+   index = open(contentfolder+"/index", "w")
    contentIndex = {
        "indexObjects": contentindexObjects
    }

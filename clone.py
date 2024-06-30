@@ -59,6 +59,8 @@ if __name__ == "__main__":
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     parser.add_argument("-sc", "--softClone", help="Just read filenames",default=True,action=argparse.BooleanOptionalAction)
     parser.add_argument("-mT", "--mimeType", help="mimeType which shall be considered",default=None)
+    parser.add_argument("-coF", "--contentFolder", help="Content Folder where the index and the content is stored",default="content")
+
     common.addArgs(parser)
     args = parser.parse_args()
     
@@ -70,7 +72,7 @@ if __name__ == "__main__":
             raise "No source folder given"
         else :
             source_folder_id = d["sourceFolder"]
-        destination_folder_name = 'content'
+        destination_folder_name = args.contentFolder
         clone_folder(service, source_folder_id, destination_folder_name,args.softClone, args.mimeType)
 
     common.writeIndex()
