@@ -6,6 +6,7 @@ import argparse
 import json
 import common
 import mimetypes
+from pathlib import Path
 
 def get_mime_type(file_path):
     mime_type, _ = mimetypes.guess_type(file_path)
@@ -52,9 +53,18 @@ def upload_file(service,file_path, folder_id,media_type):
     if media_type != None and media_type != mime_type:
         print("Skip file "+file_path+" because mimetype was not "+media_type+".Actual type was "+mime_type)
         return
+    
+    base_name, _ = os.path.splitext(file_path)
+    path = base_name + ".json" 
+    
+    if os.path.isfile(path) and os.access(path, os.R_OK):
+       r = open(path,"r")
+       properties= json.load(r)
+    else:
+       properties={}
 
     with open(file_path, 'rb') as file:
-        file_metadata = {'name': os.path.basename(file_path),'parents': [folder_id]}
+        file_metadata = {'name': os.path.basename(file_path),'parents': [folder_id], "properties": properties}
         media = MediaIoBaseUpload(file, mimetype=mime_type)
 
         file = service.files().create(
@@ -67,14 +77,14 @@ def upload_file(service,file_path, folder_id,media_type):
 
         print(f'File ID: {file.get("id")}')
         print(f'Web Content Link: {file.get("webContentLink")}')
-        common.writeIndexEntry(file.get("webContentLink"),file_path,mime_type,file.get("name"))
+        common.writeIndexEntry(file.get("webContentLink"),file_path,mime_type,file.get("name"),properties)
 
 
 if __name__ == "__main__":
     print("Start Upload")
     parser = argparse.ArgumentParser()
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
-    parser.add_argument("-uF", "--uploadFolder", help="Uploads the entire folder to drive",default="blub")
+    parser.add_argument("-uF", "--uploadFolder", help="Uploads the entire folder to drive",default="content")
     parser.add_argument("-pid", "--parentid", help="parentid",default=None)
     parser.add_argument("-mT", "--mediaType", help="Media Type which shall be uploaded",default=None)
 
