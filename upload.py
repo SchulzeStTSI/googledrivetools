@@ -35,7 +35,9 @@ def upload_folder(service,source_folder_name, destination_id,parent_id,media_typ
        folder_id = create_folder(service, folder_name, destination_id)
 
     root = False
+    print("Scan Directory: "+source_folder_name)
     for item in os.listdir(source_folder_name):
+        print("Upload: "+item)
         item_path = os.path.join(source_folder_name, item)
         if os.path.isdir(item_path):
             upload_folder(service, item_path, folder_id,media_type,root)
