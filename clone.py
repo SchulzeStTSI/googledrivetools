@@ -51,11 +51,12 @@ def clone_folder(service, source_folder_id, destination_folder_name,softClone,mi
           else:
             common.writeIndexEntry(webLink,"",mimeType,file_name,properties)
         else:
-            clone_folder(service,file_id,os.path.join(destination_folder_name,file_name),softClone,mime_Type)
+            clone_folder(service,file_id,os.path.join(destination_folder_name,file_name),softClone,mime_Type,root)
 
     print(f'Folder cloned successfully to {destination_folder_name}')
 
 if __name__ == "__main__":
+    print("Start Cloneing")
     parser = argparse.ArgumentParser()
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     parser.add_argument("-sc", "--softClone", help="Just read filenames",default=True,action=argparse.BooleanOptionalAction)

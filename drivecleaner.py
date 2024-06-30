@@ -36,6 +36,7 @@ def clone_folder(service, source_folder_id):
 
 
 if __name__ == "__main__":
+    print("Start Drive Clean")
     parser = argparse.ArgumentParser()
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     common.addArgs(parser)

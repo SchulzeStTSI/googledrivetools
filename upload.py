@@ -68,6 +68,7 @@ def upload_file(service,file_path, folder_id,media_type):
 
 
 if __name__ == "__main__":
+    print("Start Upload")
     parser = argparse.ArgumentParser()
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     parser.add_argument("-uF", "--uploadFolder", help="Uploads the entire folder to drive",default="blub")
@@ -90,5 +91,3 @@ if __name__ == "__main__":
             args.parentid = destination_folder_id
 
         upload_folder(service, source_folder_name, destination_folder_id,args.parentid,args.mediaType,True)
-
-    common.writeIndex()

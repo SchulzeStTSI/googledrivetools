@@ -63,6 +63,7 @@ def addProperties(service,source_folder_id,scanfolder):
 
 
 if __name__ == "__main__":
+    print("Start Add Properties")
     parser = argparse.ArgumentParser()
     parser.add_argument("-cF", "--configFolder", help="Config Folder",default="./config")
     parser.add_argument("-dF", "--descriptorFolder", help="Folder where are the descriptors of a file",default=".")
