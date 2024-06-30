@@ -23,9 +23,10 @@ def download_file(service, file_id,file_name, destination_folder,webLink, mimeTy
         print(f"Download {file_name} {int(status.progress() * 100)}%.")
     common.writeIndexEntry(webLink,path,mimeType,file_name,properties)
 
-def clone_folder(service, source_folder_id, destination_folder_name,softClone,mime_Type):
-    if not os.path.exists(destination_folder_name):
+def clone_folder(service, source_folder_id, destination_folder_name,softClone,mime_Type, root):
+    if not os.path.exists(destination_folder_name) and (not softClone or root):
      os.mkdir(destination_folder_name)
+    root =False
 
     results = service.files().list(q=f"'{source_folder_id}' in parents",
                                     fields='files(id, name, mimeType, webContentLink,properties)').execute()
@@ -73,7 +74,7 @@ if __name__ == "__main__":
         else :
             source_folder_id = d["sourceFolder"]
         destination_folder_name = args.contentFolder
-        clone_folder(service, source_folder_id, destination_folder_name,args.softClone, args.mimeType)
+        clone_folder(service, source_folder_id, destination_folder_name,args.softClone, args.mimeType,True)
 
     common.writeIndex(args.contentFolder)
  
