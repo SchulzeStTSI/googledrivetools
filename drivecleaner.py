@@ -1,11 +1,10 @@
 import common
 import json
 import argparse
-from dateutil import parser
 import os
 from datetime import datetime
 
-def clone_folder(service, source_folder_id,mime_Type):
+def clone_folder(service, source_folder_id):
 
     results = service.files().list(q=f"'{source_folder_id}' in parents",
                                     fields='files(id, mimeType,properties)').execute()
@@ -19,19 +18,19 @@ def clone_folder(service, source_folder_id,mime_Type):
         else: 
          properties={}
 
-        if  mimeType != common.mimeType and properties != {}:
-         
-         parsed_date = parser.isoparse(properties["expire"])
-         current_date = datetime.now()
+        if  mimeType != common.mimeType:   
+         if  properties != {}:
+            parsed_date = parser.isoparse(properties["expire"])
+            current_date = datetime.now()
 
-         if parsed_date < current_date:
-                try:
-                    service.files().delete(fileId=file_id).execute()
-                    print('Datei erfolgreich gelöscht.')
-                except Exception as e:
-                    print(f'Fehler beim Löschen der Datei: {e}')
+            if parsed_date < current_date:
+                    try:
+                        service.files().delete(fileId=file_id).execute()
+                        print('Datei erfolgreich gelöscht.')
+                    except Exception as e:
+                        print(f'Fehler beim Löschen der Datei: {e}')
         else:
-            clone_folder(service,file_id,mime_Type)
+            clone_folder(service,file_id)
 
     print(f'Folder cleaned successfully to {source_folder_id}')
 
@@ -50,4 +49,4 @@ if __name__ == "__main__":
             raise "No source folder given"
         else :
             source_folder_id = d["sourceFolder"]
-    clone_folder(service, source_folder_id, args.mimeType)
+    clone_folder(service, source_folder_id)
