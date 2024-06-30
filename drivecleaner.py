@@ -3,6 +3,7 @@ import json
 import argparse
 import os
 from datetime import datetime
+from pytz import timezone
 
 def clone_folder(service, source_folder_id):
 
@@ -20,8 +21,8 @@ def clone_folder(service, source_folder_id):
 
         if  mimeType != common.mimeType:   
          if  properties != {}:
-            parsed_date = parser.isoparse(properties["expire"])
-            current_date = datetime.now()
+            parsed_date = datetime.fromisoformat(properties["expire"])
+            current_date = datetime.now().astimezone(timezone('UTC'))
 
             if parsed_date < current_date:
                     try:
