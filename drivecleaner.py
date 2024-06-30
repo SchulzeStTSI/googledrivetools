@@ -21,7 +21,11 @@ def clone_folder(service, source_folder_id):
 
         if  mimeType != common.mimeType:   
          if  properties != {}:
-            parsed_date = datetime.fromisoformat(properties["expire"])
+            iso_date = properties["expire"]
+            if iso_date.endswith('Z'):
+                iso_date = iso_date.replace('Z', '+00:00')
+
+            parsed_date = datetime.fromisoformat(iso_date)
             current_date = datetime.now().astimezone(timezone('UTC'))
 
             if parsed_date < current_date:
