@@ -33,6 +33,7 @@ def upload_folder(service,source_folder_name, destination_id,parent_id,media_typ
         folder_id = parent_id
     else:
        folder_id = create_folder(service, folder_name, destination_id)
+
     root = False
     for item in os.listdir(source_folder_name):
         item_path = os.path.join(source_folder_name, item)
@@ -83,7 +84,11 @@ if __name__ == "__main__":
               raise "No destination folder given"
         else:
            destination_folder_id = d["destinationFolder"]
+        
         source_folder_name = args.uploadFolder
+        if args.parentid == None:
+            args.parentid = destination_folder_id
+
         upload_folder(service, source_folder_name, destination_folder_id,args.parentid,args.mediaType,True)
 
     common.writeIndex()
