@@ -75,5 +75,5 @@ if __name__ == "__main__":
         destination_folder_name = args.contentFolder
         clone_folder(service, source_folder_id, destination_folder_name,args.softClone, args.mimeType)
 
-    common.writeIndex()
+    common.writeIndex(args.contentFolder)
  
