@@ -50,6 +50,7 @@ def upload_file(service,file_path, folder_id,media_type):
     mime_type = get_mime_type(file_path)
 
     if media_type != None and media_type != mime_type:
+        print("Skip file "+file_path+" because mimetype was not "+media_type+".Actual type was "+mime_type)
         return
 
     with open(file_path, 'rb') as file:
