@@ -1,0 +1,7 @@
+tmp
+config
+index
+__pycache__
+*.json
+content
+.DS*
